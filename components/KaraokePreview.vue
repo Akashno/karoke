@@ -35,6 +35,7 @@ const nextLine = computed(() => {
   if (idx < 0) return timed[0] ?? null
   return timed[idx + 1] ?? null
 })
+
 </script> 
 
 <template> 
@@ -84,7 +85,10 @@ const nextLine = computed(() => {
             class="text-[16px] text-[#6f6f86] max-w-[600px] leading-relaxed"
             style="font-family: 'DM Mono', monospace;"
           >
-            {{ nextLine?.text ?? 'Tap the first line when vocals start.' }}
+            <span
+            v-html="(nextLine?.text ?? 'Click on Sync Line /') +
+    ' <kbd class=\'bg-gray-600 text-[#111827] px-2 rounded-xs\'>Enter</kbd> key when vocals match with the lyrics.'"
+/>
           </p>
         </Transition>
       </div>

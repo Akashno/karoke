@@ -18,10 +18,6 @@ const volume = ref(1);
 const isMuted = ref(false);
 const previousVolume = ref(1);
 
-// --- A-B Loop Control ---
-const loopA = ref<number | null>(null);
-const loopB = ref<number | null>(null);
-
 const initWaveSurfer = () => {
   if (!waveformRef.value || !song.value.audioUrl || !audioRef.value) return;
 
@@ -64,13 +60,6 @@ const initWaveSurfer = () => {
 
   wavesurfer.on('audioprocess', (time) => {
     setCurrentTime(time);
-    
-    // Handle A-B Loop
-    if (loopA.value !== null && loopB.value !== null && loopB.value > loopA.value) {
-      if (time >= loopB.value) {
-        wavesurfer?.setTime(loopA.value);
-      }
-    }
   });
 
   wavesurfer.on('seeking', (time) => {
@@ -186,16 +175,6 @@ const handleKeyup = (e: KeyboardEvent) => {
   } else if (e.key.toLowerCase() === 's') {
     e.preventDefault();
     cycleSpeed();
-  } else if (e.key === '[') {
-    e.preventDefault();
-    loopA.value = song.value.currentTime;
-  } else if (e.key === ']') {
-    e.preventDefault();
-    loopB.value = song.value.currentTime;
-  } else if (e.key === '\\') {
-    e.preventDefault();
-    loopA.value = null;
-    loopB.value = null;
   } else if (e.key.toLowerCase() === 'm') {
     e.preventDefault();
     toggleMute();
@@ -206,6 +185,12 @@ const handleRequestSeek = (e: CustomEvent) => {
   if (!wavesurfer) return;
   wavesurfer.setTime(e.detail);
   setCurrentTime(e.detail);
+};
+
+const handleRequestPlay = () => {
+  if (wavesurfer && !isPlaying.value) {
+    wavesurfer.play();
+  }
 };
 
 onMounted(() => {
@@ -223,6 +208,7 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown);
   window.addEventListener('keyup', handleKeyup);
   window.addEventListener('request-seek', handleRequestSeek as EventListener);
+  window.addEventListener('request-play', handleRequestPlay);
 
   // Initialize wavesurfer on mount in case audioUrl is already set
   nextTick(() => {
@@ -234,6 +220,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown);
   window.removeEventListener('keyup', handleKeyup);
   window.removeEventListener('request-seek', handleRequestSeek as EventListener);
+  window.removeEventListener('request-play', handleRequestPlay);
   if (audioRef.value) {
     audioRef.value.pause();
   }
@@ -241,7 +228,7 @@ onBeforeUnmount(() => {
 </script> 
 
 <template> 
-  <div v-if="song.audioUrl" class="px-6 py-4 flex items-center gap-6 max-w-[1600px] mx-auto w-full">
+  <div id="audio-player-container" v-if="song.audioUrl" class="px-6 py-4 flex items-center gap-6 max-w-[1600px] mx-auto w-full">
     <audio 
       ref="audioRef" 
       :src="song.audioUrl" 
@@ -274,19 +261,6 @@ onBeforeUnmount(() => {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             {{ currentSpeed }}x
           </button>
-          
-          <!-- A-B Repeat Control -->
-          <div class="flex items-center gap-2 text-[#666677]">
-            <button @click="loopA = loopA === null ? song.currentTime : null" class="px-1.5 py-0.5 rounded transition-colors" :class="loopA !== null ? 'bg-violet-600/20 text-violet-400' : 'hover:text-white'" title="Set Loop A ([)">
-              A: {{ loopA !== null ? formatTime(loopA) : '--' }}
-            </button>
-            <button @click="loopB = loopB === null ? song.currentTime : null" class="px-1.5 py-0.5 rounded transition-colors" :class="loopB !== null ? 'bg-violet-600/20 text-violet-400' : 'hover:text-white'" title="Set Loop B (])">
-              B: {{ loopB !== null ? formatTime(loopB) : '--' }}
-            </button>
-            <button v-if="loopA !== null || loopB !== null" @click="loopA = null; loopB = null" class="text-red-400 hover:text-red-300 ml-1" title="Clear Loop (\)">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-          </div>
         </div>
 
         <div class="flex items-center gap-4">
@@ -307,12 +281,6 @@ onBeforeUnmount(() => {
 
       <!-- Waveform Container -->
       <div class="relative w-full h-12 bg-[#1a1a2e]/50 rounded-lg overflow-hidden group">
-        <!-- Loop Region Overlay -->
-        <div v-if="loopA !== null && loopB !== null && loopB > loopA" 
-             class="absolute top-0 h-full bg-violet-500/20 pointer-events-none border-x border-violet-500/50 z-10"
-             :style="{ left: `${(loopA / song.duration) * 100}%`, width: `${((loopB - loopA) / song.duration) * 100}%` }"
-        />
-        
         <!-- Lyric Stamps Overlay -->
         <div v-for="line in song.lines.filter(l => l.time != null)" :key="line.id"
              class="absolute top-0 bottom-0 w-[2px] bg-emerald-400/80 pointer-events-none z-10 hover:bg-emerald-300 transition-colors cursor-pointer shadow-[0_0_4px_rgba(52,211,153,0.5)]"

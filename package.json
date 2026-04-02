@@ -12,6 +12,7 @@
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
+    "driver.js": "^1.4.0",
     "mp4-muxer": "^5.2.2",
     "nuxt": "^4.4.2",
     "vue": "^3.5.31",

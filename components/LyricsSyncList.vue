@@ -2,6 +2,8 @@
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useSong, wrapLine } from '~/composables/useSong'
 import type { LyricLine } from '~/composables/useSong'
+import { driver } from 'driver.js'
+import 'driver.js/dist/driver.css'
 
 const { song, removeTime, clearAllTimes, undoLastTime } = useSong()
 const listContainer = ref<HTMLElement | null>(null)
@@ -13,6 +15,7 @@ const selectedIds = ref<Set<string>>(new Set())
 const lastSelectedId = ref<string | null>(null)
 const editingTextId = ref<string | null>(null)
 const editTextValue = ref<string>('')
+const hasSeenGuide = ref(false)
 
 // --- New State for Drag & Drop ---
 const draggedLineId = ref<string | null>(null)
@@ -44,6 +47,56 @@ const nextUnsyncedLine = computed(() => {
 const tapTime = (line: LyricLine) => {
   line.time = song.value.currentTime
   scrollToNext()
+}
+
+const startGuide = async () => {
+  hasSeenGuide.value = true;
+  if (import.meta.client) {
+    localStorage.setItem('karaoke-has-seen-guide', 'true');
+  }
+  
+  await nextTick();
+  
+  const driverObj = driver({
+    showProgress: true,
+    popoverClass: 'karaoke-theme',
+    onDestroyStarted: () => {
+      // Start playing the audio automatically when the tour is finished or skipped
+      window.dispatchEvent(new CustomEvent('request-play'));
+      driverObj.destroy();
+    },
+    steps: [
+      {
+        element: '#audio-player-container',
+        popover: {
+          title: 'Audio Controls',
+          description: 'Here is your audio player! You can play/pause, adjust the playback speed, mute the track, and monitor the waveform while syncing.',
+          side: "bottom",
+          align: 'start'
+        }
+      },
+      {
+        element: '#global-sync-btn',
+        popover: { 
+          title: 'Start Syncing', 
+          description: 'Listen to the audio! When the singer sings the highlighted line, click this button. The line will be instantly synced to that exact timestamp in the song.',
+          side: "left", 
+          align: 'start' 
+        }
+      },
+      {
+        element: '#lyrics-list-container',
+        popover: { 
+          title: 'Pro Keyboard Shortcuts', 
+          description: '<ul style="margin-left: 1rem; list-style-type: disc;"><li><b>SPACE</b>: Play / Pause</li><li><b>ENTER</b>: Sync the current line</li><li><b>UP/DOWN</b>: Seek audio backward/forward 5s</li><li><b>Z</b>: Undo last sync</li></ul>',
+          side: "top", 
+          align: 'start' 
+        }
+      }
+    ]
+  });
+  
+  driverObj.drive();
 }
 
 const tapNext = () => {
@@ -363,6 +416,13 @@ const handleKeyup = (e: KeyboardEvent) => {
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown);
   window.addEventListener('keyup', handleKeyup);
+
+  if (import.meta.client) {
+    const savedGuideState = localStorage.getItem('karaoke-has-seen-guide');
+    if (savedGuideState === 'true') {
+      hasSeenGuide.value = true;
+    }
+  }
 })
 
 onBeforeUnmount(() => {
@@ -401,29 +461,46 @@ onBeforeUnmount(() => {
            {{ syncedCount }}/{{ song.lines.length }} SYNCED
          </div>
          
-         <!-- Global Tap Button -->
-         <button
-           type="button"
-           @click="tapNext"
-           :disabled="!nextUnsyncedLine"
-           class="h-[38px] px-6 rounded-xl text-[14px] font-bold tracking-wide transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-           style="font-family: 'Syne', sans-serif;"
-           :style="nextUnsyncedLine
-             ? 'background: #7c3aed; color: white;'
-             : 'background: #1a1a2e; border: 1px solid #2e2e42; color: #666677;'"
-         >
-           <span v-if="nextUnsyncedLine">Sync Line</span>
-           <span v-else>All Synced</span>
-           <svg v-if="nextUnsyncedLine" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-             <path d="M5 12h14M12 5l7 7-7 7"/>
-           </svg>
-         </button>
+         <!-- Global Tap Button / Guide Button -->
+        <button
+          v-if="syncedCount === 0 && !hasSeenGuide"
+          type="button"
+          @click="startGuide"
+          class="h-[38px] px-6 rounded-xl text-[14px] font-bold tracking-wide transition-all duration-200 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_25px_rgba(251,191,36,0.5)] hover:-translate-y-0.5 flex items-center justify-center gap-2"
+          style="font-family: 'Syne', sans-serif; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff;"
+        >
+          <span>Start Editing</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+        
+        <button
+          v-else
+          id="global-sync-btn"
+          type="button"
+          @click="tapNext"
+          :disabled="!nextUnsyncedLine"
+          class="h-[38px] px-6 rounded-xl text-[14px] font-bold tracking-wide transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          style="font-family: 'Syne', sans-serif;"
+          :style="nextUnsyncedLine
+            ? 'background: #7c3aed; color: white;'
+            : 'background: #1a1a2e; border: 1px solid #2e2e42; color: #666677;'"
+        >
+          <span v-if="nextUnsyncedLine">Sync Line</span>
+          <span v-else>All Synced</span>
+          <svg v-if="nextUnsyncedLine" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
        </div>
      </div>
 
      <!-- List -->
-     <div ref="listContainer" class="flex-1 overflow-y-auto px-6 py-4 scroll-smooth relative" @click="clearSelection">
-       <div class="flex flex-col gap-2 pb-24">
+    <div id="lyrics-list-container" ref="listContainer" class="flex-1 overflow-y-auto px-6 py-4 scroll-smooth relative" @click="clearSelection">
+      <div class="flex flex-col gap-2 pb-24">
          <div
             v-for="(line, idx) in song.lines"
             :key="line.id"

@@ -2,6 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Driver.js Karaoke Theme Overrides */
+.driver-popover.karaoke-theme {
+  background-color: #131318 !important;
+  border: 1px solid #2e2e42 !important;
+  border-radius: 16px !important;
+  color: #d9d6ff !important;
+  font-family: 'Syne', sans-serif !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+  padding: 20px !important;
+}
+
+.driver-popover.karaoke-theme .driver-popover-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  margin-bottom: 12px !important;
+}
+
+.driver-popover.karaoke-theme .driver-popover-description {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 13px !important;
+  color: #a78bfa !important;
+  line-height: 1.6 !important;
+}
+
+.driver-popover.karaoke-theme .driver-popover-footer {
+  margin-top: 16px !important;
+}
+
+.driver-popover.karaoke-theme .driver-popover-footer button {
+  background-color: #1a1a2e !important;
+  border: 1px solid #2e2e42 !important;
+  color: #d9d6ff !important;
+  text-shadow: none !important;
+  border-radius: 8px !important;
+  font-family: 'Syne', sans-serif !important;
+  font-weight: bold !important;
+  transition: all 0.2s ease !important;
+  padding: 6px 12px !important;
+}
+
+.driver-popover.karaoke-theme .driver-popover-footer button:hover {
+  background-color: #7c3aed !important;
+  color: white !important;
+  border-color: #7c3aed !important;
+}
+
+.driver-popover.karaoke-theme .driver-popover-progress-text {
+  color: #666677 !important;
+  font-family: 'DM Mono', monospace !important;
+  font-weight: bold !important;
+}
+
+.driver-popover.karaoke-theme .driver-popover-arrow-side-top { border-top-color: #131318 !important; }
+.driver-popover.karaoke-theme .driver-popover-arrow-side-bottom { border-bottom-color: #131318 !important; }
+.driver-popover.karaoke-theme .driver-popover-arrow-side-left { border-left-color: #131318 !important; }
+.driver-popover.karaoke-theme .driver-popover-arrow-side-right { border-right-color: #131318 !important; }
+
 @keyframes wave {
   0%,
   100% {
