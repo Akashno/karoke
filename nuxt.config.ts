@@ -9,4 +9,10 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  runtimeConfig: {
+    mvsepApiToken: process.env.NUXT_MVSEP_API_TOKEN || '',
+    public: {
+      replicateApiKey: process.env.NUXT_REPLICATE_API_KEY || '',
+    }
+  }
 })

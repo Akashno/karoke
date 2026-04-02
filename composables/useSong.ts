@@ -8,6 +8,7 @@
  export type SongState = { 
   audioUrl: string | null; 
   audioFileName: string | null;
+  instrumentalAudio: string | null;
   duration: number; 
   lines: LyricLine[]; 
   currentTime: number; 
@@ -41,6 +42,7 @@ export const useSong = () => {
   const song = useState<SongState>('song', () => ({ 
     audioUrl: null, 
     audioFileName: null,
+    instrumentalAudio: null,
     duration: 0, 
     lines: [], 
     currentTime: 0, 
@@ -51,14 +53,25 @@ export const useSong = () => {
     if (song.value.audioUrl && song.value.audioUrl.startsWith('blob:')) { 
       URL.revokeObjectURL(song.value.audioUrl); 
     } 
+    if (song.value.instrumentalAudio && song.value.instrumentalAudio.startsWith('blob:')) {
+      URL.revokeObjectURL(song.value.instrumentalAudio);
+    }
     song.value.audioUrl = url; 
     song.value.audioFileName = fileName;
+    song.value.instrumentalAudio = null;
     song.value.duration = 0; 
     song.value.currentTime = 0; 
     song.value.isReady = false; 
   }; 
- 
-   const setLyricsFromText = (text: string) => { 
+
+  const setInstrumentalAudio = (url: string) => {
+    if (song.value.instrumentalAudio && song.value.instrumentalAudio.startsWith('blob:')) {
+      URL.revokeObjectURL(song.value.instrumentalAudio);
+    }
+    song.value.instrumentalAudio = url;
+  };
+
+  const setLyricsFromText = (text: string) => { 
     const MAX_LINE_LENGTH = 70; // Standard optimal length for karaoke/subtitles
 
     const rawLines = text.split('\n').map((t) => t.trim()).filter(Boolean);
@@ -107,5 +120,5 @@ export const useSong = () => {
      }
    };
  
-   return { song, setAudio, setLyricsFromText, setDuration, setCurrentTime, removeTime, clearAllTimes, undoLastTime }; 
- };
+   return { song, setAudio, setInstrumentalAudio, setLyricsFromText, setDuration, setCurrentTime, removeTime, clearAllTimes, undoLastTime }; 
+};

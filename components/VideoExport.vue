@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import * as Mp4Muxer from 'mp4-muxer';
 import * as WebMMuxer from 'webm-muxer';
+import { useVocalRemover } from '~/composables/useVocalRemover';
 
-const { song } = useSong();
+const { song, setInstrumentalAudio } = useSong();
+const { isProcessing: isRemovingVocals, status: vocalStatus, progress: vocalProgress, removeVocals } = useVocalRemover();
+
 const audioRef = ref<HTMLAudioElement | null>(null);
 const isRendering = ref(false);
 const progress = ref(0);
@@ -28,18 +31,53 @@ const availableFormats = computed(() => {
 
 const selectedFormat = ref(supportsWebCodecs ? 'mp4' : 'webm-rt');
 
-const startRender = async () => {
+const isRenderingInstrumental = ref(false);
+
+const startRender = async (useInstrumental: boolean = false) => {
   if (!audioRef.value || !song.value.audioUrl) return;
 
+  isRenderingInstrumental.value = useInstrumental;
   isRendering.value = true;
   isCancelled = false;
   videoUrl.value = null;
   progress.value = 0;
 
   if (selectedFormat.value === 'mp4' || selectedFormat.value === 'webm') {
-    await renderWithWebCodecs(selectedFormat.value);
+    await renderWithWebCodecs(selectedFormat.value, useInstrumental);
   } else {
-    await renderWithMediaRecorder();
+    await renderWithMediaRecorder(useInstrumental);
+  }
+};
+
+const startRenderWithoutVocals = async () => {
+  if (!song.value.audioUrl) return;
+
+  try {
+    let fileToProcess: File;
+    
+    if (song.value.audioUrl.startsWith('blob:')) {
+      const res = await fetch(song.value.audioUrl);
+      const blob = await res.blob();
+      fileToProcess = new File([blob], song.value.audioFileName || 'audio.mp3', { type: blob.type || 'audio/mpeg' });
+    } else {
+      const res = await fetch(song.value.audioUrl);
+      const blob = await res.blob();
+      fileToProcess = new File([blob], song.value.audioFileName || 'audio.mp3', { type: blob.type || 'audio/mpeg' });
+    }
+
+    const finalUrl = await removeVocals(fileToProcess);
+    if (finalUrl && !isCancelled) {
+      // Pass the raw URL to our proxy route to bypass MVSEP CORS blocks
+      const proxiedUrl = `/api/proxy-audio?url=${encodeURIComponent(finalUrl)}`;
+      setInstrumentalAudio(proxiedUrl);
+      
+      // Wait for audio element to update its src
+      await nextTick();
+      // Start video render automatically using the instrumental
+      await startRender(true);
+    }
+  } catch (error) {
+    console.error('Failed to remove vocals before rendering:', error);
   }
 };
 
@@ -84,10 +122,11 @@ const drawFrameAtTime = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElemen
   }
 };
 
-const renderWithWebCodecs = async (format: 'mp4' | 'webm') => {
+const renderWithWebCodecs = async (format: 'mp4' | 'webm', useInstrumental: boolean) => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 48000 });
-    const response = await fetch(song.value.audioUrl!);
+    const fetchUrl = useInstrumental && song.value.instrumentalAudio ? song.value.instrumentalAudio : song.value.audioUrl!;
+    const response = await fetch(fetchUrl);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
@@ -206,7 +245,7 @@ const renderWithWebCodecs = async (format: 'mp4' | 'webm') => {
   }
 };
 
-const renderWithMediaRecorder = async () => {
+const renderWithMediaRecorder = async (useInstrumental: boolean) => {
   const audio = audioRef.value!;
   const canvas = document.createElement('canvas');
   canvas.width = 1280;
@@ -342,17 +381,33 @@ const stopRender = () => {
         </div>
       </div>
 
-      <div class="mt-6 px-4 py-3 rounded-xl flex items-center gap-3 text-[12px] font-medium" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: #fbbf24; font-family: 'DM Mono', monospace;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        Keep this tab open during render
-      </div>
     </div>
 
     <div v-show="false">
-      <audio ref="audioRef" :src="song.audioUrl ?? ''" crossorigin="anonymous"></audio>
+      <audio ref="audioRef" :src="song.instrumentalAudio || song.audioUrl || ''" crossorigin="anonymous"></audio>
     </div>
 
-    <div v-if="isRendering" class="space-y-3">
+    <div v-if="isRemovingVocals" class="space-y-3">
+      <div class="flex justify-between text-[11px] font-bold tracking-widest text-[#fbbf24]" style="font-family: 'DM Mono', monospace;">
+        <span class="uppercase">{{ vocalStatus }}</span>
+        <span>{{ Math.round(vocalProgress) }}%</span>
+      </div>
+      <div class="w-full rounded-full h-2.5 overflow-hidden" style="background: rgba(255,255,255,0.06);">
+        <div
+          class="h-full transition-all duration-300"
+          :style="{ width: vocalProgress + '%', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }"
+        />
+      </div>
+      <button
+        @click="stopRender"
+        class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200"
+        style="background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: #fecaca; font-family: Syne, sans-serif;"
+      >
+        Cancel
+      </button>
+    </div>
+
+    <div v-else-if="isRendering" class="space-y-3">
       <div class="flex justify-between text-[11px] font-bold tracking-widest text-[#a78bfa]" style="font-family: 'DM Mono', monospace;">
         <span>RENDERING...</span>
         <span>{{ progress.toFixed(1) }}%</span>
@@ -393,17 +448,39 @@ const stopRender = () => {
       </div>
     </div>
 
-    <button
-      v-else
-      :disabled="!canRender"
-      @click="startRender"
-      class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200"
-      :style="canRender
-        ? 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #f0eeff; font-family: Syne, sans-serif;'
-        : 'background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); color: #555566; font-family: Syne, sans-serif; cursor: not-allowed;'"
-    >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Generate Video
-    </button>
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <button
+        :disabled="!canRender"
+        @click="startRender(false)"
+        class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200"
+        :style="canRender
+          ? 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #f0eeff; font-family: Syne, sans-serif;'
+          : 'background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); color: #555566; font-family: Syne, sans-serif; cursor: not-allowed;'"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Generate Video
+      </button>
+
+      <button
+        v-if="!song.instrumentalAudio"
+        :disabled="!canRender"
+        @click="startRenderWithoutVocals"
+        class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200 bg-amber-500 hover:bg-amber-400 text-amber-950 disabled:bg-[#1a1a2e] disabled:text-[#555566] disabled:border disabled:border-[#2e2e42] disabled:cursor-not-allowed"
+        style="font-family: Syne, sans-serif;"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
+        Generate Without Vocals
+      </button>
+
+      <button
+        v-else
+        @click="startRender(true)"
+        class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200 bg-emerald-500 hover:bg-emerald-400 text-emerald-950"
+        style="font-family: Syne, sans-serif;"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Generate Without Vocals
+      </button>
+    </div>
   </div>
 </template>
