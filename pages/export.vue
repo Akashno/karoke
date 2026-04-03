@@ -30,16 +30,9 @@ const formatTime = (time: number) => {
       style="background: radial-gradient(circle, rgba(99,60,180,0.12) 0%, transparent 70%);"
     />
 
-    <div v-if="song.audioUrl" class="relative z-10 max-w-4xl mx-auto h-full flex flex-col pt-12">
-      <div class="flex items-start justify-between gap-4 mb-8">
+    <div v-if="song.audioUrl" class="relative z-10 max-w-4xl mx-auto h-full flex flex-col pt-6 lg:pt-12">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <div
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-3 text-[11px] font-bold tracking-widest text-violet-400"
-            style="background: rgba(139,92,246,0.15); border: 0.5px solid rgba(139,92,246,0.35); font-family: 'DM Mono', monospace;"
-          >
-            <span class="w-1.5 h-1.5 rounded-full bg-violet-400" />
-            EXPORT MODE
-          </div>
           <h1 class="text-[28px] font-bold tracking-tight text-[#f0eeff] mb-2" style="font-family: 'Syne', sans-serif;">
             Export Project
           </h1>
@@ -51,7 +44,7 @@ const formatTime = (time: number) => {
         <button
           type="button"
           @click="goBack"
-          class="px-5 py-2.5 rounded-xl text-[14px] font-medium transition-all duration-200 border hover:bg-[rgba(139,92,246,0.1)] flex items-center gap-2"
+          class="px-5 py-2.5 rounded-xl text-[14px] font-medium transition-all duration-200 border hover:bg-[rgba(139,92,246,0.1)] flex items-center gap-2 w-full sm:w-auto justify-center"
           style="font-family: 'DM Mono', monospace; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1); color: #f0eeff;"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -60,16 +53,17 @@ const formatTime = (time: number) => {
       </div>
 
       <!-- Stats Row -->
-      <div class="flex items-center gap-4 mb-8">
-        <div class="px-4 py-2 rounded-xl text-[13px] flex items-center gap-2" style="background: rgba(19,19,24,0.92); border: 1px solid rgba(30,30,46,1); font-family: 'DM Mono', monospace; color: #555566;">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          Lines synced <span class="text-[#a78bfa] ml-1">{{ song.lines.filter(l => l.time != null).length }} / {{ song.lines.length }}</span>
+      <div class="flex flex-wrap items-center gap-4 mb-8 text-[13px] text-[#666677]" style="font-family: 'DM Mono', monospace;">
+        <div>
+          Lines synced: <span class="text-[#f0eeff]">{{ song.lines.filter(l => l.time != null).length }}/{{ song.lines.length }}</span>
         </div>
-        <div class="px-4 py-2 rounded-xl text-[13px] flex items-center gap-2" style="background: rgba(19,19,24,0.92); border: 1px solid rgba(30,30,46,1); font-family: 'DM Mono', monospace; color: #555566;">
-          Song <span class="text-[#a78bfa] ml-1">{{ song.audioFileName || 'Audio Track' }}</span>
+        <span class="w-1 h-1 rounded-full bg-[#2e2e42]"></span>
+        <div>
+          Song: <span class="text-[#f0eeff]">{{ song.audioFileName || 'Audio Track' }}</span>
         </div>
-        <div class="px-4 py-2 rounded-xl text-[13px] flex items-center gap-2" style="background: rgba(19,19,24,0.92); border: 1px solid rgba(30,30,46,1); font-family: 'DM Mono', monospace; color: #555566;">
-          Duration <span class="text-[#a78bfa] ml-1">{{ formatTime(song.duration) }}</span>
+        <span class="w-1 h-1 rounded-full bg-[#2e2e42]"></span>
+        <div>
+          Duration: <span class="text-[#f0eeff]">{{ formatTime(song.duration) }}</span>
         </div>
       </div>
 

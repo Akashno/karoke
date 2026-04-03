@@ -144,12 +144,12 @@ const loadDemo = async () => {
             <span class="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
             PROFESSIONAL TOOLS
           </div>
-          <h1 class="text-[42px] lg:text-[56px] leading-[1.1] font-bold tracking-tight text-[#f0eeff] mb-6" style="font-family: 'Syne', sans-serif;">
+          <h1 class="text-[36px] sm:text-[42px] lg:text-[56px] leading-[1.1] font-bold tracking-tight text-[#f0eeff] mb-6" style="font-family: 'Syne', sans-serif;">
             Create flawless<br />
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">Karaoke Videos</span>
             in seconds.
           </h1>
-          <p class="text-[16px] leading-relaxed text-[#8f8fa3] max-w-[480px]" style="font-family: 'DM Mono', monospace;">
+          <p class="text-[18px] leading-relaxed text-[#8f8fa3] max-w-[480px]">
             The fastest way to synchronize lyrics to your music. Perfect for content creators, musicians, and karaoke enthusiasts who want professional-grade lyric videos without the complex video editing software.
           </p>
         </div>
@@ -157,11 +157,11 @@ const loadDemo = async () => {
         <div class="space-y-6">
           <div class="flex items-start gap-4">
             <div class="w-10 h-10 rounded-xl bg-[#131318] border border-[#2e2e42] flex items-center justify-center flex-shrink-0 text-violet-400">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v4m4-8v12m4-16v20m4-16v12m4-8v4"/></svg>
             </div>
             <div>
-              <h3 class="text-[#f0eeff] font-bold text-[15px] mb-1" style="font-family: 'Syne', sans-serif;">Real-time Synchronization</h3>
-              <p class="text-[#666677] text-[13px] leading-relaxed" style="font-family: 'DM Mono', monospace;">Tap along to the beat using your keyboard. Our precision engine maps every syllable perfectly to the audio track.</p>
+              <h3 class="text-[#f0eeff] font-medium text-[14px] mb-1" style="font-family: 'Syne', sans-serif;">Real-time Synchronization</h3>
+              <p class="text-[#666677] text-[13px] leading-relaxed">Tap along to the beat using your keyboard. Our precision engine maps every syllable perfectly to the audio track.</p>
             </div>
           </div>
           
@@ -170,8 +170,8 @@ const loadDemo = async () => {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
             <div>
-              <h3 class="text-[#f0eeff] font-bold text-[15px] mb-1" style="font-family: 'Syne', sans-serif;">High-Speed Export</h3>
-              <p class="text-[#666677] text-[13px] leading-relaxed" style="font-family: 'DM Mono', monospace;">Render your final video entirely in your browser using hardware-accelerated WebCodecs. No server uploads required.</p>
+              <h3 class="text-[#f0eeff] font-medium text-[14px] mb-1" style="font-family: 'Syne', sans-serif;">High-Speed Export</h3>
+              <p class="text-[#666677] text-[13px] leading-relaxed">Render your final video entirely in your browser using hardware-accelerated WebCodecs. No server uploads required.</p>
             </div>
           </div>
 
@@ -180,15 +180,15 @@ const loadDemo = async () => {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             </div>
             <div>
-              <h3 class="text-[#f0eeff] font-bold text-[15px] mb-1" style="font-family: 'Syne', sans-serif;">Studio-Grade Interface</h3>
-              <p class="text-[#666677] text-[13px] leading-relaxed" style="font-family: 'DM Mono', monospace;">Built-in waveform visualizers, playback speed controls, and a gorgeous dark mode UI.</p>
+              <h3 class="text-[#f0eeff] font-medium text-[14px] mb-1" style="font-family: 'Syne', sans-serif;">Studio-Grade Interface</h3>
+              <p class="text-[#666677] text-[13px] leading-relaxed">Built-in waveform visualizers, playback speed controls, and a gorgeous dark mode UI.</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Right Column: The Form -->
-      <div class="w-full max-w-[480px] mx-auto bg-[#0b0b0e]/80 backdrop-blur-md p-8 rounded-3xl border border-[#1e1e2e] shadow-2xl" style="font-family: 'DM Mono', monospace;">
+      <div class="w-full max-w-[480px] mx-auto bg-[#0b0b0e]/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-[#1e1e2e] shadow-2xl" style="font-family: 'DM Mono', monospace;">
         <!-- Audio Upload -->
         <div class="mb-6">
           <label class="flex items-center gap-2 text-[11px] uppercase tracking-widest text-[#666677] mb-2">
@@ -255,20 +255,16 @@ const loadDemo = async () => {
 
         <!-- Status chips -->
         <div class="flex gap-3 mb-6">
-          <div class="flex-1 flex items-center gap-2 rounded-xl px-3 py-2.5 text-[11px] font-bold tracking-wide border transition-all duration-300 uppercase"
+          <div class="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-[11px] font-bold tracking-wide border transition-all duration-300 uppercase"
             :class="song.audioUrl
-              ? 'bg-[#130f1e] border-[rgba(91,33,182,0.4)] text-violet-400'
-              : 'bg-[#131318] border-[#1a1a28] text-[#3d3d55]'">
-            <span class="w-2 h-2 rounded-full flex-shrink-0 transition-all"
-              :class="song.audioUrl ? 'bg-violet-500 shadow-[0_0_8px_rgba(124,58,237,0.6)]' : 'bg-[#202030]'" />
+              ? 'bg-violet-600 border-violet-600 text-white'
+              : 'bg-transparent border-[#2e2e42] text-[#666677]'">
             1. Audio
           </div>
-          <div class="flex-1 flex items-center gap-2 rounded-xl px-3 py-2.5 text-[11px] font-bold tracking-wide border transition-all duration-300 uppercase"
+          <div class="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-[11px] font-bold tracking-wide border transition-all duration-300 uppercase"
             :class="lineCount > 0
-              ? 'bg-[#130f1e] border-[rgba(91,33,182,0.4)] text-violet-400'
-              : 'bg-[#131318] border-[#1a1a28] text-[#3d3d55]'">
-            <span class="w-2 h-2 rounded-full flex-shrink-0 transition-all"
-              :class="lineCount > 0 ? 'bg-violet-500 shadow-[0_0_8px_rgba(124,58,237,0.6)]' : 'bg-[#202030]'" />
+              ? 'bg-violet-600 border-violet-600 text-white'
+              : 'bg-transparent border-[#2e2e42] text-[#666677]'">
             2. Lyrics
           </div>
         </div>
@@ -288,14 +284,11 @@ const loadDemo = async () => {
             </svg>
           </button>
           
-          <div class="flex items-center justify-center">
+          <div class="flex items-center justify-center pt-2">
             <button @click="loadDemo" :disabled="isLoadingDemo"
-              class="text-[13px] text-[#8f8fa3] hover:text-violet-300 bg-[#1a1a2e]/50 hover:bg-[#1a1a2e] border border-[#2e2e42]/50 hover:border-[#5b21b6]/50 px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2 group"
-              style="font-family: 'Syne', sans-serif; font-weight: bold;">
-              <span v-if="isLoadingDemo" class="w-3.5 h-3.5 border-2 border-violet-400 border-t-transparent rounded-full animate-spin"></span>
-              <svg v-else class="w-4 h-4 text-violet-400 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
+              class="text-[13px] text-[#666677] hover:text-white bg-transparent border-none transition-colors duration-200 flex items-center gap-1.5 group"
+              style="font-family: 'Syne', sans-serif;">
+              <span v-if="isLoadingDemo" class="w-3.5 h-3.5 border-2 border-[#666677] border-t-transparent rounded-full animate-spin"></span>
               {{ isLoadingDemo ? 'Loading demo...' : 'Just looking around? Try the demo.' }}
             </button>
           </div>

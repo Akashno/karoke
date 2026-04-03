@@ -40,8 +40,8 @@ const nextLine = computed(() => {
 
 <template> 
   <div
-    class="rounded-2xl p-6 flex flex-col justify-start relative overflow-hidden"
-    style="background: radial-gradient(circle at 50% 0%, rgba(124,58,237,0.12) 0%, rgba(19,19,24,0.92) 55%), rgba(19,19,24,0.92); border: 1px solid rgba(91,33,182,0.35); min-height: 480px;"
+    class="rounded-2xl p-4 lg:p-6 flex flex-col justify-start relative overflow-hidden h-full lg:min-h-[480px] shadow-[inset_0_2px_20px_rgba(0,0,0,0.4)]"
+    style="background: radial-gradient(circle at 50% 0%, rgba(124,58,237,0.1) 0%, rgba(19,19,24,0.95) 55%), rgba(19,19,24,0.95); border: 1px solid rgba(255,255,255,0.15);"
   >
     <!-- Header -->
     <div class="flex items-start justify-between relative z-10 w-full">
@@ -69,7 +69,7 @@ const nextLine = computed(() => {
         <Transition name="fade-slide" mode="out-in">
           <p
             :key="currentLine?.id ?? 'ready'"
-            class="text-[42px] font-extrabold leading-[1.2] text-[#f0eeff] drop-shadow-lg max-w-[800px]"
+            class="text-[28px] lg:text-[42px] font-extrabold leading-[1.2] text-[#f0eeff] drop-shadow-lg max-w-[800px]"
             style="font-family: 'Syne', sans-serif; letter-spacing: -0.02em;"
           >
             {{ currentLine?.text ?? 'Ready…' }}
@@ -82,7 +82,7 @@ const nextLine = computed(() => {
         <Transition name="fade" mode="out-in">
           <p
             :key="nextLine?.id ?? 'hint'"
-            class="text-[16px] text-[#6f6f86] max-w-[600px] leading-relaxed"
+            class="text-[14px] lg:text-[16px] text-[#6f6f86] max-w-[600px] leading-relaxed"
             style="font-family: 'DM Mono', monospace;"
           >
             <span

@@ -448,13 +448,13 @@ const stopRender = () => {
       </div>
     </div>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div v-else class="grid grid-cols-1 gap-3 mt-2">
       <button
         :disabled="!canRender"
         @click="startRender(false)"
         class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200"
         :style="canRender
-          ? 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #f0eeff; font-family: Syne, sans-serif;'
+          ? 'background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); color: #fff; font-family: Syne, sans-serif;'
           : 'background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); color: #555566; font-family: Syne, sans-serif; cursor: not-allowed;'"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -465,20 +465,22 @@ const stopRender = () => {
         v-if="!song.instrumentalAudio"
         :disabled="!canRender"
         @click="startRenderWithoutVocals"
-        class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200 bg-amber-500 hover:bg-amber-400 text-amber-950 disabled:bg-[#1a1a2e] disabled:text-[#555566] disabled:border disabled:border-[#2e2e42] disabled:cursor-not-allowed"
-        style="font-family: Syne, sans-serif;"
+        class="w-full h-10 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 transition-all duration-200 border bg-transparent"
+        :style="canRender
+          ? 'border-color: rgba(255,255,255,0.1); color: #a78bfa; font-family: Syne, sans-serif;'
+          : 'border-color: rgba(255,255,255,0.05); color: #555566; font-family: Syne, sans-serif; cursor: not-allowed;'"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
         Generate Without Vocals
       </button>
 
       <button
         v-else
         @click="startRender(true)"
-        class="w-full h-12 rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 transition-all duration-200 bg-emerald-500 hover:bg-emerald-400 text-emerald-950"
-        style="font-family: Syne, sans-serif;"
+        class="w-full h-10 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 transition-all duration-200 border bg-transparent"
+        style="border-color: rgba(255,255,255,0.1); color: #10b981; font-family: Syne, sans-serif;"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         Generate Without Vocals
       </button>
     </div>

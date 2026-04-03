@@ -228,7 +228,7 @@ onBeforeUnmount(() => {
 </script> 
 
 <template> 
-  <div id="audio-player-container" v-if="song.audioUrl" class="px-6 py-4 flex items-center gap-6 max-w-[1600px] mx-auto w-full">
+  <div id="audio-player-container" v-if="song.audioUrl" class="px-4 lg:px-6 py-3 lg:py-4 flex flex-col lg:flex-row items-center gap-3 lg:gap-6 max-w-[1600px] mx-auto w-full">
     <audio 
       ref="audioRef" 
       :src="song.audioUrl" 
@@ -236,24 +236,45 @@ onBeforeUnmount(() => {
     /> 
 
     <!-- Play/Pause Button -->
-    <button 
-      @click="togglePlay" 
-      class="flex-none w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 shadow-lg" 
-      :class="isPlaying ? 'bg-[#1a1a2e] border border-[#2e2e42] text-violet-400 hover:bg-[#202038]' : 'bg-violet-600 hover:bg-violet-500 text-white'"
-    > 
-      <svg v-if="isPlaying" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-        <rect x="6" y="4" width="4" height="16" rx="1"/>
-        <rect x="14" y="4" width="4" height="16" rx="1"/>
-      </svg>
-      <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="ml-1">
-        <path d="M5 3l14 9-14 9V3z"/>
-      </svg>
-    </button> 
+    <div class="flex w-full lg:w-auto items-center gap-3 lg:gap-0">
+      <button 
+        @click="togglePlay" 
+        class="flex-none w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-200 shadow-lg" 
+        :class="isPlaying ? 'bg-[#1a1a2e] border border-[#2e2e42] text-violet-400 hover:bg-[#202038]' : 'bg-violet-600 hover:bg-violet-500 text-white'"
+      > 
+        <svg v-if="isPlaying" class="w-[14px] h-[14px] lg:w-[18px] lg:h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"/>
+          <rect x="14" y="4" width="4" height="16" rx="1"/>
+        </svg>
+        <svg v-else class="w-[16px] h-[16px] lg:w-[20px] lg:h-[20px] ml-1" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M5 3l14 9-14 9V3z"/>
+        </svg>
+      </button> 
+      
+      <!-- Mobile Info (Speed, Time, Volume) next to play button -->
+      <div class="flex-1 flex lg:hidden items-center justify-between text-[10px] sm:text-[11px] tracking-wider min-w-0" style="font-family: 'DM Mono', monospace;">
+        <div class="flex items-center gap-1.5 sm:gap-3">
+          <button @click="cycleSpeed" class="flex items-center gap-1 text-[#a78bfa] hover:text-white transition-colors whitespace-nowrap" title="Playback Speed (S)">
+            <svg width="10" height="10" class="sm:w-[12px] sm:h-[12px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            {{ currentSpeed }}x
+          </button>
+        </div>
+        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <button @click="toggleMute" class="text-[#666677] hover:text-[#d9d6ff] transition-colors shrink-0" title="Mute (M)">
+            <svg v-if="isMuted || volume === 0" width="12" height="12" class="sm:w-[14px] sm:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+            <svg v-else width="12" height="12" class="sm:w-[14px] sm:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+          </button>
+          <span class="text-[#666677] whitespace-nowrap truncate max-w-[80px] sm:max-w-none"> 
+            <span class="text-[#d9d6ff]">{{ formatTime(song.currentTime) }}s</span> / <span class="hidden sm:inline">{{ formatTime(song.duration) }}s</span><span class="inline sm:hidden">{{ Math.round(song.duration) }}s</span>
+          </span>
+        </div>
+      </div>
+    </div>
 
     <!-- Info & Scrubber -->
-    <div class="flex-1 flex flex-col gap-2">
+    <div class="flex-1 flex flex-col gap-2 w-full lg:w-auto min-w-0">
       <div class="flex items-center justify-between text-[11px] tracking-wider" style="font-family: 'DM Mono', monospace;">
-        <div class="flex items-center gap-4">
+        <div class="hidden lg:flex items-center gap-4">
           <span class="text-violet-400 font-semibold uppercase">Audio Player</span>
           
           <!-- Speed Control -->
@@ -263,7 +284,7 @@ onBeforeUnmount(() => {
           </button>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="hidden lg:flex items-center gap-4">
           <!-- Volume Control -->
           <div class="flex items-center gap-2 group relative">
             <button @click="toggleMute" class="text-[#666677] hover:text-[#d9d6ff] transition-colors" title="Mute (M)">
@@ -280,7 +301,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Waveform Container -->
-      <div class="relative w-full h-12 bg-[#1a1a2e]/50 rounded-lg overflow-hidden group">
+      <div class="relative w-full h-10 lg:h-12 bg-[#1a1a2e]/50 rounded-lg overflow-hidden group">
         <!-- Lyric Stamps Overlay -->
         <div v-for="line in song.lines.filter(l => l.time != null)" :key="line.id"
              class="absolute top-0 bottom-0 w-[2px] bg-emerald-400/80 pointer-events-none z-10 hover:bg-emerald-300 transition-colors cursor-pointer shadow-[0_0_4px_rgba(52,211,153,0.5)]"
@@ -292,36 +313,61 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Shortcuts Guide -->
-      <div class="flex items-center justify-center gap-6 mt-3 text-[11px] text-[#666677] tracking-wider" style="font-family: 'DM Mono', monospace;">
-        <div class="flex items-center gap-2">
-          <div class="flex gap-1">
-            <kbd class="px-2 py-1 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">←</kbd>
-            <kbd class="px-2 py-1 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">→</kbd>
+      <div class="hidden lg:flex items-center justify-center gap-4 mt-3 text-[10px] text-[#666677] tracking-wider opacity-60 hover:opacity-100 transition-opacity" style="font-family: 'DM Mono', monospace;">
+        <!-- Edit -->
+        <div class="flex items-center gap-3">
+          <span class="uppercase text-[9px] font-bold text-[#8f8fa3]">EDIT</span>
+          <div class="flex items-center gap-1.5">
+            <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">ENTER</kbd>
+            <span>sync</span>
           </div>
-          <span>±1s</span>
-        </div>
-        <span class="w-1 h-1 rounded-full bg-[#2e2e42]" />
-        <div class="flex items-center gap-2">
-          <kbd class="px-2 py-1 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">ENTER</kbd>
-          <span>sync line</span>
-        </div>
-        <span class="w-1 h-1 rounded-full bg-[#2e2e42]" />
-        <div class="flex items-center gap-2">
-          <kbd class="px-2 py-1 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">SPACE</kbd>
-          <span>play/pause</span>
-        </div>
-        <span class="w-1 h-1 rounded-full bg-[#2e2e42]" />
-        <div class="flex items-center gap-2">
-          <kbd class="px-2 py-1 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">Z</kbd>
-          <span>undo last</span>
-        </div>
-        <span class="w-1 h-1 rounded-full bg-[#2e2e42]" />
-        <div class="flex items-center gap-2">
-          <div class="flex gap-1">
-            <kbd class="px-2 py-1 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">↑</kbd>
-            <kbd class="px-2 py-1 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">↓</kbd>
+          <div class="flex items-center gap-1.5">
+            <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">Z</kbd>
+            <span>undo</span>
           </div>
-          <span>jump 5s</span>
+        </div>
+
+        <div class="w-px h-3 bg-[#2e2e42]" />
+
+        <!-- Playback -->
+        <div class="flex items-center gap-3">
+          <span class="uppercase text-[9px] font-bold text-[#8f8fa3]">PLAYBACK</span>
+          <div class="flex items-center gap-1.5">
+            <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">SPACE</kbd>
+            <span>play/pause</span>
+          </div>
+        </div>
+
+        <div class="w-px h-3 bg-[#2e2e42]" />
+
+        <!-- Navigation -->
+        <div class="flex items-center gap-3 relative group cursor-pointer">
+          <span class="uppercase text-[9px] font-bold text-[#8f8fa3]">NAV</span>
+          <div class="flex items-center gap-1.5">
+            <div class="flex gap-0.5">
+              <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">←</kbd>
+              <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">→</kbd>
+            </div>
+            <span>±1s</span>
+          </div>
+          <div class="flex items-center gap-1.5 ml-2">
+             <span class="underline decoration-dashed opacity-50 group-hover:opacity-100 transition-opacity">More</span>
+             <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#131318] border border-[#2e2e42] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none flex flex-col gap-2 z-50">
+                <div class="flex items-center gap-2 whitespace-nowrap">
+                  <div class="flex gap-0.5">
+                    <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">↑</kbd>
+                    <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">↓</kbd>
+                  </div>
+                  <span>Jump 5s</span>
+                </div>
+                <div class="flex items-center gap-2 whitespace-nowrap">
+                  <div class="flex gap-0.5">
+                    <kbd class="px-1.5 py-0.5 rounded bg-[#1a1a2e] border border-[#2e2e42] text-[#d9d6ff] font-sans text-[10px]">S</kbd>
+                  </div>
+                  <span>Cycle Speed</span>
+                </div>
+             </div>
+          </div>
         </div>
       </div>
 

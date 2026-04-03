@@ -437,40 +437,42 @@ onBeforeUnmount(() => {
      style="background: rgba(19,19,24,0.92); border: 1px solid rgba(30,30,46,1);"
    >
      <!-- Header -->
-     <div class="flex-none p-6 flex items-start justify-between gap-4 border-b border-[#1e1e2e]/50">
+     <div class="flex-none p-4 lg:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 border-b border-[#1e1e2e]/50">
        <div>
-         <p class="text-[11px] tracking-widest text-[#666677]" style="font-family: 'DM Mono', monospace;">
+         <p class="text-[10px] sm:text-[11px] tracking-widest text-[#666677]" style="font-family: 'DM Mono', monospace;">
            LYRICS
          </p>
-         <p class="text-[16px] font-semibold text-[#f0eeff] mt-1" style="font-family: 'Syne', sans-serif;">
+         <p class="text-[14px] sm:text-[16px] font-semibold text-[#f0eeff] mt-0.5 sm:mt-1" style="font-family: 'Syne', sans-serif;">
            Sync lines
          </p>
        </div>
        
-       <div class="flex items-center gap-3">
-         <button
-           v-if="syncedCount > 0"
-           @click="handleClearAll"
-           class="h-[38px] px-4 rounded-xl text-[11px] font-bold tracking-widest text-[#666677] hover:text-red-400 hover:bg-red-400/10 transition-colors uppercase flex items-center justify-center"
-           style="font-family: 'DM Mono', monospace; border: 1px solid transparent;"
-         >
-           CLEAR ALL
-         </button>
-         
-         <div class="h-[38px] flex items-center justify-center px-4 rounded-xl text-[11px] tracking-widest text-[#666677] uppercase border border-[#2e2e42] bg-[#131318]" style="font-family: 'DM Mono', monospace;">
-           {{ syncedCount }}/{{ song.lines.length }} SYNCED
-         </div>
+       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+           <div class="flex items-center justify-between w-full sm:w-auto gap-2 sm:gap-3">
+             <button
+               v-if="syncedCount > 0"
+               @click="handleClearAll"
+               class="h-[30px] sm:h-[38px] px-2 sm:px-4 rounded-xl text-[10px] sm:text-[11px] font-bold tracking-widest text-[#666677] hover:text-red-400 hover:bg-red-400/10 transition-colors uppercase flex items-center justify-center"
+               style="font-family: 'DM Mono', monospace; border: 1px solid transparent;"
+             >
+               CLEAR ALL
+             </button>
+             
+             <div class="h-[30px] sm:h-[38px] flex items-center justify-center px-2 sm:px-4 rounded-xl text-[10px] sm:text-[11px] tracking-widest text-[#666677] uppercase border border-[#2e2e42] bg-[#131318]" style="font-family: 'DM Mono', monospace;">
+               {{ syncedCount }}/{{ song.lines.length }} SYNCED
+             </div>
+           </div>
          
          <!-- Global Tap Button / Guide Button -->
         <button
           v-if="syncedCount === 0 && !hasSeenGuide"
           type="button"
           @click="startGuide"
-          class="h-[38px] px-6 rounded-xl text-[14px] font-bold tracking-wide transition-all duration-200 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_25px_rgba(251,191,36,0.5)] hover:-translate-y-0.5 flex items-center justify-center gap-2"
-          style="font-family: 'Syne', sans-serif; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff;"
+          class="h-[36px] sm:h-[38px] px-4 sm:px-6 rounded-xl text-[13px] sm:text-[14px] font-bold tracking-wide transition-all duration-200 shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_25px_rgba(124,58,237,0.5)] hover:-translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto mt-1 sm:mt-0"
+          style="font-family: 'Syne', sans-serif; background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); color: #fff;"
         >
           <span>Start Editing</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="14" height="14" class="sm:w-[16px] sm:h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
             <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -483,7 +485,7 @@ onBeforeUnmount(() => {
           type="button"
           @click="tapNext"
           :disabled="!nextUnsyncedLine"
-          class="h-[38px] px-6 rounded-xl text-[14px] font-bold tracking-wide transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          class="h-[36px] sm:h-[38px] px-4 sm:px-6 rounded-xl text-[13px] sm:text-[14px] font-bold tracking-wide transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto mt-1 sm:mt-0"
           style="font-family: 'Syne', sans-serif;"
           :style="nextUnsyncedLine
             ? 'background: #7c3aed; color: white;'
@@ -491,7 +493,7 @@ onBeforeUnmount(() => {
         >
           <span v-if="nextUnsyncedLine">Sync Line</span>
           <span v-else>All Synced</span>
-          <svg v-if="nextUnsyncedLine" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg v-if="nextUnsyncedLine" width="14" height="14" class="sm:w-[16px] sm:h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>
@@ -499,13 +501,13 @@ onBeforeUnmount(() => {
      </div>
 
      <!-- List -->
-    <div id="lyrics-list-container" ref="listContainer" class="flex-1 overflow-y-auto px-6 py-4 scroll-smooth relative" @click="clearSelection">
-      <div class="flex flex-col gap-2 pb-24">
+    <div id="lyrics-list-container" ref="listContainer" class="flex-1 overflow-y-auto px-1 sm:px-2 lg:px-6 py-2 lg:py-4 scroll-smooth relative" @click="clearSelection">
+      <div class="flex flex-col gap-1.5 lg:gap-2 pb-24">
          <div
             v-for="(line, idx) in song.lines"
             :key="line.id"
             :data-line-id="line.id"
-            class="group flex items-center gap-3 py-2 rounded-xl px-2 transition-colors cursor-pointer relative"
+            class="group flex items-start sm:items-center gap-0.5 sm:gap-2 lg:gap-3 py-2.5 sm:py-1.5 lg:py-2 rounded-xl px-1.5 sm:px-2 transition-colors cursor-pointer relative"
             :class="{ 
               'is-active-line': line.id === activeLineId && !selectedIds.has(line.id), 
               'border-t-2 border-t-violet-500': dragOverLineId === line.id
@@ -522,7 +524,7 @@ onBeforeUnmount(() => {
           >
             <!-- Drag Handle -->
             <div 
-              class="w-6 h-6 flex items-center justify-center cursor-grab opacity-0 group-hover:opacity-100 text-[#555566] hover:text-[#d9d6ff] transition-opacity flex-none"
+              class="w-4 lg:w-6 h-4 lg:h-6 flex items-center justify-center cursor-grab opacity-0 group-hover:opacity-100 text-[#555566] hover:text-[#d9d6ff] transition-opacity flex-none mt-0.5 sm:mt-0 shrink-0"
               @mousedown="isDraggingHandle = true"
               @mouseup="isDraggingHandle = false"
               @mouseleave="isDraggingHandle = false"
@@ -535,16 +537,16 @@ onBeforeUnmount(() => {
             </div>
 
            <!-- 1. Index -->
-           <span class="w-6 text-[11px] text-[#3d3d55] flex-none text-right" style="font-family: 'DM Mono', monospace;">
+           <span class="w-5 sm:w-5 lg:w-6 text-[9px] lg:text-[10px] text-[#3d3d55] flex-none text-right mt-0.5 sm:mt-0 shrink-0 opacity-20 font-medium" style="font-family: 'DM Mono', monospace;">
              {{ String(idx + 1).padStart(2, '0') }}
            </span>
 
            <!-- 2. Lyric Text -->
-            <div class="flex-1 min-w-0 flex items-center gap-2 pr-2 pl-2">
+            <div class="flex-1 min-w-0 flex items-center gap-1 sm:gap-2 pr-0.5 sm:pr-2 pl-0.5 sm:pl-2">
               <template v-if="editingTextId === line.id">
                 <input 
                   v-model="editTextValue"
-                  class="w-full bg-[#13131a] border border-violet-600 rounded px-2 py-1 text-[15px] text-[#f0eeff] outline-none focus:ring-1 focus:ring-violet-500 transition-all"
+                  class="w-full bg-[#13131a] border border-violet-600 rounded px-1 sm:px-2 py-1 text-[13px] sm:text-[14px] lg:text-[15px] text-[#f0eeff] outline-none focus:ring-1 focus:ring-violet-500 transition-all"
                   style="font-family: 'DM Mono', monospace;"
                   @keydown.stop="handleTextEditKeydown($event, line)"
                   @blur="saveEditingText"
@@ -553,40 +555,40 @@ onBeforeUnmount(() => {
               </template>
               <template v-else>
                 <span
-                  class="text-[15px] leading-snug truncate"
-                  style="font-family: 'DM Mono', monospace;"
-                  :class="line.id === activeLineId ? 'text-[#f0eeff] font-medium' : 'text-[#bcb6e6] opacity-80'"
+                  class="text-[14px] sm:text-[14px] lg:text-[15px] leading-relaxed break-words whitespace-normal block w-full pt-0.5 sm:pt-0"
+                  style="font-family: 'DM Mono', monospace; word-break: break-word;"
+                  :class="line.id === activeLineId || selectedIds.has(line.id) ? 'text-[#f0eeff] font-medium' : 'text-[#bcb6e6] opacity-80'"
                 >
                   {{ line.text || '(empty line)' }}
                 </span>
-                <button @click.stop="startEditingText(line)" class="opacity-0 group-hover:opacity-100 text-[#555566] hover:text-violet-400 p-1 flex-none" title="Edit text">
+                <button @click.stop="startEditingText(line)" class="opacity-0 group-hover:opacity-100 text-[#555566] hover:text-violet-400 p-1 flex-none mt-0.5 sm:mt-0" title="Edit text">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                 </button>
               </template>
             </div>
 
            <!-- 3. Action / Status Button (Right side) -->
-           <div class="flex-none flex items-center justify-end min-w-[120px]">
+           <div class="flex-none flex items-center justify-end min-w-[50px] sm:min-w-[80px] lg:min-w-[120px] mt-0.5 sm:mt-0 gap-1.5 sm:gap-2 shrink-0">
               
               <!-- Hover actions: Add below, Delete -->
-              <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 mr-2 transition-opacity">
-                <button @click.stop="insertLineBelow(line.id)" class="p-1.5 text-[#555566] hover:text-emerald-400 rounded-lg hover:bg-emerald-400/10 transition-colors" title="Insert line below (Ctrl+Enter)">
+              <div class="hidden lg:flex items-center gap-1 opacity-0 group-hover:opacity-100 mr-2 transition-opacity">
+                <button @click.stop="insertLineBelow(line.id)" class="p-1 lg:p-1.5 text-[#555566] hover:text-emerald-400 rounded-lg hover:bg-emerald-400/10 transition-colors" title="Insert line below (Ctrl+Enter)">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </button>
-                <button @click.stop="deleteLine(line.id)" class="p-1.5 text-[#555566] hover:text-red-400 rounded-lg hover:bg-red-400/10 transition-colors" title="Delete line (Ctrl+Delete)">
+                <button @click.stop="deleteLine(line.id)" class="p-1 lg:p-1.5 text-[#555566] hover:text-red-400 rounded-lg hover:bg-red-400/10 transition-colors" title="Delete line (Ctrl+Delete)">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                 </button>
               </div>
 
              <!-- State: Synced (Time + Remove X) -->
-             <div v-if="line.time != null" class="flex items-center gap-2">
+             <div v-if="line.time != null" class="flex items-center gap-1 sm:gap-1 lg:gap-2 ml-auto">
                
                <input
                  v-if="editingId === line.id"
                  v-model="editValue"
                  type="number"
                  step="0.01"
-                 class="w-24 h-9 px-3 rounded-lg text-[13px] tracking-wider text-center bg-[#13131a] border-2 border-violet-600 text-[#d9d6ff] outline-none focus:ring-0 focus:border-violet-400 transition-colors"
+                 class="w-12 sm:w-16 lg:w-24 h-6 sm:h-8 lg:h-9 px-1 lg:px-3 rounded-lg text-[10px] sm:text-[12px] lg:text-[13px] tracking-wider text-center bg-[#13131a] border-2 border-violet-600 text-[#d9d6ff] outline-none focus:ring-0 focus:border-violet-400 transition-colors"
                  style="font-family: 'DM Mono', monospace;"
                  @blur="saveEditing(line)"
                  @keyup.enter="saveEditing(line)"
@@ -596,18 +598,19 @@ onBeforeUnmount(() => {
                <span 
                  v-else
                  @click.stop="startEditing(line)"
-                 class="min-w-[5rem] h-9 px-3 rounded-lg text-[13px] tracking-wider flex items-center justify-center cursor-text hover:bg-[rgba(255,255,255,0.1)] transition-colors" 
-                 style="font-family: 'DM Mono', monospace; background: rgba(255,255,255,0.06); border: 1px solid rgba(139,92,246,0.18); color: #d9d6ff;"
+                 class="min-w-[2.75rem] sm:min-w-[4rem] lg:min-w-[4.5rem] flex items-center justify-end cursor-text transition-opacity whitespace-nowrap text-[10px] lg:text-[11px]" 
+                 style="font-family: 'DM Mono', monospace;"
+                 :class="line.id === activeLineId ? 'text-violet-300 opacity-100 font-medium' : 'text-[#8f8fa3] opacity-40 group-hover:opacity-100'"
                >
                  {{ line.time.toFixed(2) }}s
                </span>
 
-               <button
+                 <button
                  @click.stop="handleRemoveTime(line.id)"
-                 class="w-8 h-9 rounded-lg flex items-center justify-center text-[#666677] hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                 class="w-6 h-6 sm:w-6 sm:h-6 lg:w-8 lg:h-9 rounded-lg flex items-center justify-center text-[#666677] transition-all ml-0.5 opacity-30 hover:opacity-100 hover:text-red-400 hover:bg-red-400/10"
                  title="Remove timestamp"
                >
-                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <svg width="10" height="10" class="sm:w-[14px] sm:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                    <line x1="18" y1="6" x2="6" y2="18"></line>
                    <line x1="6" y1="6" x2="18" y2="18"></line>
                  </svg>
@@ -618,8 +621,8 @@ onBeforeUnmount(() => {
              <button
                v-else
                type="button"
-               class="px-4 py-1.5 rounded-lg text-[12px] font-bold tracking-wide transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100"
-               style="font-family: 'Syne', sans-serif; background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); color: #a78bfa;"
+               class="px-2 py-1 lg:px-3 lg:py-1 rounded-md text-[10px] lg:text-[11px] font-medium transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 ml-auto whitespace-nowrap h-6 sm:h-auto flex items-center justify-center text-[#8f8fa3] hover:text-white hover:bg-white/10"
+               style="font-family: 'Syne', sans-serif;"
                @click.stop="tapTime(line)"
              >
                Sync
@@ -628,19 +631,18 @@ onBeforeUnmount(() => {
          </div>
        </div>
 
-      <!-- Bulk Actions Floating Bar -->
-      <div v-if="selectedIds.size > 1" class="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#1a1a2e] border border-[#3d3d55] px-6 py-3 rounded-2xl flex items-center gap-6 shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50">
-        <span class="text-[13px] font-bold text-[#f0eeff]" style="font-family: 'Syne', sans-serif;">{{ selectedIds.size }} lines selected</span>
+      <div v-if="selectedIds.size > 1" class="absolute bottom-4 lg:bottom-10 left-1/2 -translate-x-1/2 bg-[#1a1a2e] border border-[#3d3d55] px-3 py-2 lg:px-6 lg:py-3 rounded-2xl flex items-center gap-3 lg:gap-6 shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 whitespace-nowrap overflow-x-auto max-w-[90%]">
+        <span class="text-[11px] lg:text-[13px] font-bold text-[#f0eeff]" style="font-family: 'Syne', sans-serif;">{{ selectedIds.size }} lines</span>
         <div class="w-px h-4 bg-[#3d3d55]"></div>
-        <button @click.stop="mergeSelected" class="text-[13px] text-[#a78bfa] hover:text-white font-medium transition-colors flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6v12"></path><path d="M3 12l3-3"></path><path d="M3 12l3 3"></path></svg>
+        <button @click.stop="mergeSelected" class="text-[11px] lg:text-[13px] text-[#a78bfa] hover:text-white font-medium transition-colors flex items-center gap-1 lg:gap-2">
+          <svg width="12" height="12" class="lg:w-[14px] lg:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6v12"></path><path d="M3 12l3-3"></path><path d="M3 12l3 3"></path></svg>
           Merge
         </button>
-        <button @click.stop="deleteSelected" class="text-[13px] text-red-400 hover:text-red-300 font-medium transition-colors flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        <button @click.stop="deleteSelected" class="text-[11px] lg:text-[13px] text-red-400 hover:text-red-300 font-medium transition-colors flex items-center gap-1 lg:gap-2">
+          <svg width="12" height="12" class="lg:w-[14px] lg:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           Delete
         </button>
-        <button @click.stop="selectedIds.clear()" class="text-[13px] text-[#666677] hover:text-white font-medium transition-colors ml-2">
+        <button @click.stop="selectedIds.clear()" class="text-[11px] lg:text-[13px] text-[#666677] hover:text-white font-medium transition-colors ml-1 lg:ml-2">
           Cancel
         </button>
       </div>
